@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+    # Data base service configuration - PostgreSQL
+    postgres:
+        image: 'postgres:latest'
+        ports:
+            - 5432:5432
+        env_file:
+            - ./env/.postgres_env
+        networks:
+            - dockerized_django_net
+        volumes:
+            - postgresdata:/var/lib/postgresql/data/
+        restart: on-failure
+    
+    # Database management tool - Adminer
+    adminer:
+        image: adminer
+        environment:
+            - ADMINER_DESIGN=pappu687
+        depends_on:
+            - postgres
+        networks:
+            - dockerized_django_net
+        volumes:
+            - adminer:/adminer
+        ports:
+            - 8080:8080
+        restart: on-failure
+
+    # Web - Django
+    django:
+        build:
+            context: ./django/
+            dockerfile: Dockerfile
+        depends_on:
+            - postgres
+        volumes:
+            - ./django:/app
+            - static-files:/app/static
+        ports:
+            - 8000:8000
+        env_file:
+            - ./env/.env
+        networks:
+            - dockerized_django_net
+        restart: always
+
+volumes:
+    static-files:
+        name: dockerized_django_volume
+    postgresdata:
+        name: dockerized_django_postgres_volume
+    adminer:
+        name: adminer_volume
+
+networks:
+    dockerized_django_net:
+        external:
+            name: supernet

@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# Log files
+django/logs/*.log
+django/logs/*.log.*
+
+# Environments
+# .env
+# .venv
+# env/
